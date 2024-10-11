@@ -1,4 +1,4 @@
-import ar.edu.unlu.blackjack.Baraja;
+import ar.edu.unlu.blackjack.Mazo;
 import ar.edu.unlu.blackjack.Crupier;
 import ar.edu.unlu.blackjack.Jugador;
 
@@ -7,14 +7,14 @@ import java.util.List;
 import java.util.Scanner;
 
 public class Blackjack_Mas_Jugadores {
-    private final Baraja baraja;
+    private final Mazo mazo;
     private final List<Jugador> jugadores;
     private final Crupier crupier;
     private final Scanner scanner;
     private int cantidadJugadores;
 
     public Blackjack_Mas_Jugadores() {
-        baraja = new Baraja();
+        mazo = new Mazo();
         crupier = new Crupier();
         jugadores = new ArrayList<Jugador>();
         scanner = new Scanner(System.in);
@@ -27,7 +27,7 @@ public class Blackjack_Mas_Jugadores {
 
         repartirCartasIniciales();
 
-        System.out.println("Cartas restantes: " + baraja.cartasRestantes());
+        System.out.println("Cartas restantes: " + mazo.cartasRestantes());
 
         crupier.mostrarPrimeraCarta();
 
@@ -73,13 +73,23 @@ public class Blackjack_Mas_Jugadores {
 
     // Metodo donde controlo al jugador
     private void turnoJugador(Jugador jugador) {
-        System.out.println("Es el turno de: " + jugador.getNombre());
+        System.out.println("Es el turno de: " + jugador.getNombre() + (" (") + jugador.getPuntaje() + (")"));
         String ingreso;
-        while (!jugador.sePaso21() || jugador.getPuntaje() == 21){
+        while (!jugador.sePaso21() || jugador.getPuntaje() != 21){
+            if (jugador.tieneBlackjack()){
+                // jugador.mostrarMano();
+                System.out.println("Felicitaciones, conseguiste un BJ!");
+                break;
+            }
+            if (jugador.getPuntaje() == 21){
+                break;
+            }
             System.out.println(jugador.getNombre() +": ingrese 'c' para pedir o 'p' para plantarse: ");
             ingreso = scanner.nextLine();
+
+
             if (ingreso.equals("c")){
-                jugador.recibirCarta(baraja.repartirCarta());
+                jugador.recibirCarta(mazo.repartirCarta());
                 jugador.mostrarMano();
 
                 if (jugador.sePaso21()){
@@ -112,12 +122,12 @@ public class Blackjack_Mas_Jugadores {
 
     private void repartirCartasIniciales(){
         for (Jugador jugador : jugadores){
-            jugador.recibirCarta(baraja.repartirCarta());
-            jugador.recibirCarta(baraja.repartirCarta());
+            jugador.recibirCarta(mazo.repartirCarta());
+            jugador.recibirCarta(mazo.repartirCarta());
             jugador.mostrarMano();
         }
-        crupier.recibirCarta(baraja.repartirCarta());
-        crupier.recibirCarta(baraja.repartirCarta());
+        crupier.recibirCarta(mazo.repartirCarta());
+        crupier.recibirCarta(mazo.repartirCarta());
     }
 
     // Metodo donde controlo al crupier
@@ -128,7 +138,7 @@ public class Blackjack_Mas_Jugadores {
         // Obtiene una carta hasta obtener 17 o más.
         while (crupier.debePedirCarta()){
             System.out.println("El crupier obtiene una carta.");
-            crupier.recibirCarta(baraja.repartirCarta());
+            crupier.recibirCarta(mazo.repartirCarta());
             crupier.mostrarMano();
         }
 
@@ -144,15 +154,24 @@ public class Blackjack_Mas_Jugadores {
         int puntajeJugador;
         int puntajeCrupier = crupier.getPuntaje();
         System.out.println();
-
-        System.out.println();
         System.out.println("========================================================");
 
         for(Jugador jugador : jugadores){
             puntajeJugador = jugador.getPuntaje();
-            System.out.println("El puntaje final de " + jugador.getNombre() + " es: " + puntajeJugador);
-            // jugador.mostrarMano();
             System.out.println();
+            // System.out.println("El puntaje final de " + jugador.getNombre() + " es: " + puntajeJugador);
+            System.out.printf("El puntaje final de %s es: %d --> ", jugador.getNombre(), jugador.getPuntaje());
+            // jugador.mostrarMano();
+            // Verifico si tiene blackjack, si lo tiene se termina el juego y se da por ganado por el crupier
+            if (crupier.tieneBlackjack()){
+                System.out.println("El crupier obtuvo Blackjack.");
+                // Se le notifica a los jugadores que perdieron todos
+                for (Jugador j : jugadores){
+                    System.out.println(jugador.getNombre() + " PERDIÓ!");
+                }
+                break;
+            }
+
             if (jugador.sePaso21()){
                 System.out.println(jugador.getNombre() + " se paso de los 21. Perdiste!");
             }else if (crupier.sePaso21()){

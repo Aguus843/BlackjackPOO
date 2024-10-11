@@ -1,18 +1,18 @@
-import ar.edu.unlu.blackjack.Baraja;
+import ar.edu.unlu.blackjack.Mazo;
 import ar.edu.unlu.blackjack.Crupier;
 import ar.edu.unlu.blackjack.Jugador;
 
 import java.util.Scanner;
 
 public class BlackJack {
-    private final Baraja baraja;
+    private final Mazo mazo;
     private final Crupier crupier;
     private final Jugador jugador;
     private final Scanner scanner;
     private int cantidadJugadores;
 
     public BlackJack() {
-        baraja = new Baraja();
+        mazo = new Mazo();
         crupier = new Crupier();
         jugador = new Jugador("Agustin"); // CAMBIAR
         scanner = new Scanner(System.in);
@@ -24,10 +24,10 @@ public class BlackJack {
 
 
         // Reparto las dos cartas al jugador y luego al crupier
-        jugador.recibirCarta(baraja.repartirCarta());
-        crupier.recibirCarta(baraja.repartirCarta());
-        jugador.recibirCarta(baraja.repartirCarta());
-        crupier.recibirCarta(baraja.repartirCarta());
+        jugador.recibirCarta(mazo.repartirCarta());
+        crupier.recibirCarta(mazo.repartirCarta());
+        jugador.recibirCarta(mazo.repartirCarta());
+        crupier.recibirCarta(mazo.repartirCarta());
 
         // Muestro las cartas iniciales:
         jugador.mostrarMano();
@@ -49,7 +49,7 @@ public class BlackJack {
             System.out.println("Ingrese 'c' para pedir o 'p' para plantarse: ");
             ingreso = scanner.nextLine();
             if (ingreso.equals("c")){
-                jugador.recibirCarta(baraja.repartirCarta());
+                jugador.recibirCarta(mazo.repartirCarta());
                 jugador.mostrarMano();
 
                 if (jugador.sePaso21()){
@@ -73,7 +73,7 @@ public class BlackJack {
         // Obtiene una carta hasta obtener 17 o más.
         while (crupier.debePedirCarta()){
             System.out.println("El crupier obtiene una carta.");
-            crupier.recibirCarta(baraja.repartirCarta());
+            crupier.recibirCarta(mazo.repartirCarta());
             crupier.mostrarMano();
         }
 

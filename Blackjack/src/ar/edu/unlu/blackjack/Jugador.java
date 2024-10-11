@@ -89,4 +89,13 @@ public class Jugador {
     public List<Carta> getMano(){
         return mano;
     }
+
+    public boolean tieneBlackjack(){
+        if ((mano.get(0).getValor().equals("A")) && (mano.get(1).getValor().equals("10") || mano.get(1).getValor().equals("J") || mano.get(1).getValor().equals("Q") || mano.get(1).getValor().equals("K"))){
+            return true;
+        }else if ((mano.get(0).getValor().equals("10") || mano.get(0).getValor().equals("J") || mano.get(0).getValor().equals("Q") || mano.get(0).getValor().equals("K")) && mano.get(1).getValor().equals("A")){
+            return true;
+        }
+        return false;
+    }
 }
