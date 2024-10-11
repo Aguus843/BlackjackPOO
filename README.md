@@ -1,6 +1,4 @@
-# TP Final
-
-## **Blackjack**
+# TP Final - **Blackjack**
 
 ## _Descripción._
 ### Consiste en sumar un valor cercano a *21*, sin pasarse. Se juega contra un crupier (en este caso una máquina) donde tiene sus propias reglas. Éste está obligado a pedir siempre que su puntaje sume 16 o menos, obligando a plantarse si suma 17 o más.
