@@ -109,6 +109,7 @@ public class Jugador {
             for (Carta carta : getManoActual().getMano()) {
                 System.out.printf("%s de %s\n", carta.getValor(), carta.getPalo());
                 sumatoriaPuntaje += carta.getValorNumerico();
+                manos.getFirst().setPuntaje(sumatoriaPuntaje);
             }
             if (manos.getFirst().tieneAs() && sumatoriaPuntaje <= 20){
                 System.out.printf("El puntaje actual es de: %d/%d\n", manos.getFirst().getPuntaje()-10, manos.getFirst().getPuntaje());
@@ -119,23 +120,37 @@ public class Jugador {
             int sumatoriaPuntaje1 = 0;
             int sumatoriaPuntaje2 = 0;
             System.out.println(getNombre() + " tiene las siguientes cartas en ambas manos:");
-            for (Carta carta : getManoActual().getMano()) {
-                System.out.printf("%s de %s\t\t\t\t", carta.getValor(), carta.getPalo());
-                sumatoriaPuntaje1 += carta.getValorNumerico();
-                for (Carta cartaMano2 : getMano2().getMano()){
+            Carta cartasMano1;
+            Carta cartasMano2;
+            int debugManos = getManoActual().getMano().size();
+            System.out.println(debugManos);
+            for (int i = 0; i < getManoActual().getMano().size(); i++) {
+                Carta cartaMano = getManoActual().getMano().get(i);
+                System.out.printf("%s de %s\t\t\t\t", cartaMano.getValor(), cartaMano.getPalo());
+                sumatoriaPuntaje1 += cartaMano.getValorNumerico();
+                manos.getFirst().setPuntaje(sumatoriaPuntaje1);
+                for (int j = 0; j < getMano2().getMano().size(); j++) {
+                    Carta cartaMano2 = getMano2().getMano().get(j);
                     System.out.printf("%s de %s\n", cartaMano2.getValor(), cartaMano2.getPalo());
                     sumatoriaPuntaje2 += cartaMano2.getValorNumerico();
+                    manos.get(1).setPuntaje(sumatoriaPuntaje2);
                 }
             }
+//            for (Carta carta : getManoActual().getMano()) {
+//                System.out.printf("%s de %s\t\t\t\t", carta.getValor(), carta.getPalo());
+//                sumatoriaPuntaje1 += carta.getValorNumerico();
+//                for (Carta cartaMano2 : getMano2().getMano()) {
+//                    System.out.printf("%s de %s\n", cartaMano2.getValor(), cartaMano2.getPalo());
+//                    sumatoriaPuntaje2 += cartaMano2.getValorNumerico();
+//                }
+//            }
             for (int i = 0; i < 2; i++){
-                for (int j = 0; j < getManos().size(); j++){
-                    // jugador.getManos().size() me devuelve la cantidad de manos activas del jugador
-                    if (manos.get(j).tieneAs() && sumatoriaPuntaje1 < 21){
-                        System.out.printf("El puntaje actual de la mano %d es de: %d/%d\n", j+1, this.puntaje-10, this.puntaje);
-                    }else System.out.printf("El puntaje actual de la mano %d es de: %d\n", j+1, this.puntaje);
-                }
-                System.out.println("===========================================");
+                if (manos.get(i).tieneAs() && sumatoriaPuntaje1 < 21){
+                    // System.out.printf("El puntaje actual de la mano %d es de: %d/%d\n", i+1, this.puntaje-10, this.puntaje);
+                    System.out.printf("El puntaje actual de la mano %d es de: %d/%d\n", i+1, manos.get(i).getPuntaje()-10, manos.get(i).getPuntaje());
+                }else System.out.printf("El puntaje actual de la mano %d es de: %d\n", i+1, manos.get(i).getPuntaje());
             }
+                System.out.println("===========================================");
         }
     }
 
@@ -168,12 +183,18 @@ public class Jugador {
         this.pagoSeguro = b;
     }
     public boolean tieneBlackjack(){
-        for (Mano mano : manos){
-            if (mano != null){
-                if ((mano.getMano().getFirst().equals("A")) && (mano.getMano().get(1).getValor().equals("10") || mano.getMano().get(1).getValor().equals("J") || mano.getMano().get(1).getValor().equals("Q") || mano.getMano().get(1).getValor().equals("K"))){
-                    return true;
-                }else return (mano.getMano().getFirst().getValor().equals("10") || mano.getMano().getFirst().getValor().equals("J") || mano.getMano().getFirst().getValor().equals("Q") || mano.getMano().getFirst().getValor().equals("K")) && mano.getMano().get(1).getValor().equals("A");
-            }
+//        for (Mano mano : manos){
+//            if (mano != null){
+//                if ((mano.getMano().getFirst().equals("A")) && (mano.getMano().get(1).getValor().equals("10") || mano.getMano().get(1).getValor().equals("J") || mano.getMano().get(1).getValor().equals("Q") || mano.getMano().get(1).getValor().equals("K"))){
+//                    return true;
+//                }else return (mano.getMano().getFirst().getValor().equals("10") || mano.getMano().getFirst().getValor().equals("J") || mano.getMano().getFirst().getValor().equals("Q") || mano.getMano().getFirst().getValor().equals("K")) && mano.getMano().get(1).getValor().equals("A");
+//            }
+//        }
+        List<Mano> manos = getManos();
+        for (int i = 0; i < manos.size(); i++){
+            if ((manos.get(i).getMano().getFirst().equals("A")) && (manos.get(i).getMano().get(1).equals("10") || manos.get(i).getMano().get(1).equals("J") || manos.get(i).getMano().get(1).equals("Q") || manos.get(i).getMano().get(1).equals("K"))){
+                return true;
+            }else return (manos.get(i).getMano().getFirst().equals("10") || manos.get(i).getMano().getFirst().equals("J") || manos.get(i).getMano().getFirst().equals("Q") || manos.get(i).getMano().getFirst().equals("K") && manos.get(i).getMano().get(1).getValor().equals("A"));
         }
         return false;
     }

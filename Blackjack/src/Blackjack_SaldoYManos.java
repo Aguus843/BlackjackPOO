@@ -156,12 +156,14 @@ public class Blackjack_SaldoYManos {
                         // jugador.dividirMano(jugador); Terminar luego
                         jugador.getManoActual().dividirMano(jugador);
                         // Arranco un ciclo while para cargar ambas manos
-                        for (Mano m : jugador.getManos()){
-                            while ((!m.sePaso21() && m.getPuntaje() != 21) && !flagDoblo) {
-                                System.out.printf("Es el turno de: %s con la mano %d --> (%d)\n", jugador.getNombre(), nroMano + 1, m.getPuntaje());
+                        List<Mano> manos = jugador.getManos();
+                        boolean terminoMano2 = false;
+                        for (int i = 0; i < manos.size(); i++) {
+                            while ((!manos.get(i).sePaso21() && manos.get(i).getPuntaje() < 21) && !flagDoblo) {
+                                System.out.printf("Es el turno de: %s con la mano %d --> (%d)\n", jugador.getNombre(), i + 1, manos.get(i).getPuntaje());
 
-                                if (m.tieneBlackjack()) {
-                                    System.out.printf("Felicitaciones %s! conseguiste BJ en la mano %d.\n", jugador.getNombre(), nroMano + 1);
+                                if (manos.get(i).tieneBlackjack()) { // PINCHA ACA
+                                    System.out.printf("Felicitaciones %s! conseguiste BJ en la mano %d.\n", jugador.getNombre(), i + 1);
                                     break;
                                 }
 
@@ -170,27 +172,28 @@ public class Blackjack_SaldoYManos {
                                 switch (ingreso) {
                                     case "c":
                                         // Pedir carta
-                                        m.recibirCarta(mazo.repartirCarta());
-                                        m.mostrarMano(jugador);
-                                        if (m.sePaso21()) {
+                                        manos.get(i).recibirCarta(mazo.repartirCarta());
+                                        System.out.printf("----= MANO %d =----\n", i + 1);
+                                        manos.get(i).mostrarMano(jugador);
+                                        if (manos.get(i).sePaso21()) {
                                             System.out.println("Se paso de los 21. Perdió el juego :(");
                                             break;
                                         }
                                         break;
                                     case "p":
-                                        System.out.println(jugador.getNombre() + " se plantó con la mano " + nroMano + 1 + ".");
+                                        System.out.println(jugador.getNombre() + " se plantó con la mano " + (i + 1) + ".");
                                         break;
                                     case "d":
                                         System.out.printf("[DEBUG] El saldo del jugador %s es de %d.\n", jugador.getNombre(), jugador.getSaldo());
                                         if (jugador.getSaldo() >= jugador.getApuesta()) {
-                                            System.out.printf("%s dobló.\n", jugador.getNombre());
+                                            System.out.printf("%s dobló con la mano %d.\n", jugador.getNombre(), i + 1);
                                             // jugador.pedirCartaMano1();
-                                            mano.recibirCarta(mazo.repartirCarta());
-                                            mano.doblarMano(jugador);
+                                            manos.get(i).recibirCarta(mazo.repartirCarta());
+                                            manos.get(i).doblarMano(jugador);
                                             flagDoblo = true;
                                             break;
                                         } else {
-                                            System.out.print("[!] No podes doblar dado que no tenés las cartas iguales");
+                                            System.out.printf("[!] No podés doblar dado que no tenés el saldo suficiente! (Saldo = %d)\n", jugador.getSaldo());
                                         }
                                         break;
                                     default:
@@ -198,7 +201,8 @@ public class Blackjack_SaldoYManos {
                                         break;
                                 }
                             }
-                            if (m.getMano().get(1).getValor() != null){
+                            if (i == 2) terminoMano2 = true;
+                            if (terminoMano2){
                                 System.out.println("------ Resumen ambas manos ------");
                                 jugador.mostrarManos();
                             }

@@ -27,6 +27,9 @@ public class Mano{
     public int getPuntaje(){
         return this.puntaje;
     }
+    public void setPuntaje(int puntaje){
+        this.puntaje = puntaje;
+    }
     public int getApuesta(){
         return this.apuesta;
     }
@@ -108,11 +111,12 @@ public class Mano{
         // Paso lo de la mano uno
         List<Mano> manos = jugador.getManos();
         jugador.getMano2().recibirCarta(jugador.getManoActual().getMano().removeFirst());
-        jugador.getManoActual().getMano().removeFirst();
+        // jugador.getManoActual().getMano().removeFirst();
         System.out.println("[LOG] Carta 1 eliminada de mano 1.");
         // Le asigno a la mano 2 la carta de la mano 1.
         System.out.println("[LOG] Carta 1 asignada a la mano 2.");
         // Ajusto la apuesta (Lo mismo para la mano 2)
+        jugador.mostrarManos();
         jugador.setApuestaMano2(jugador.getApuesta());
         System.out.printf("%s: tu apuesta para ambas manos son -> Mano 1 (%d) -> Mano 2 (%d).\n", jugador.getNombre(), jugador.getApuesta(), jugador.getApuestaMano2());
 
