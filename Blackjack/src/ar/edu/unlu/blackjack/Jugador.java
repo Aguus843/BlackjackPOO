@@ -47,6 +47,7 @@ public class Jugador {
 
     // Metodo que reparte a UNA mano.
     public void repartirCartaAMano(int indexMano, Carta carta){
+        List<Mano> manos = getManos();
         if (indexMano  >= 0 && indexMano < manos.size()){
             manos.get(indexMano).recibirCarta(carta);
         }else System.out.println("El indice de mano no es valido.");
@@ -100,74 +101,59 @@ public class Jugador {
     public boolean multiplesManos(){
         return manos.size() > 1;
     }
+
     public void mostrarManos(){
         int cantManos = getManos().size();
         if (cantManos == 0) return;
         if (cantManos == 1){
             int sumatoriaPuntaje = 0;
             System.out.println(getNombre() + " tiene las siguientes cartas:");
+            Mano mano = getManoActual();
             for (Carta carta : getManoActual().getMano()) {
                 System.out.printf("%s de %s\n", carta.getValor(), carta.getPalo());
                 sumatoriaPuntaje += carta.getValorNumerico();
-                manos.getFirst().setPuntaje(sumatoriaPuntaje);
+                manos.getFirst().actualizarPuntaje();
+                manos.getFirst().setPuntaje(manos.getFirst().getPuntaje());
             }
             if (manos.getFirst().tieneAs() && sumatoriaPuntaje <= 20){
                 System.out.printf("El puntaje actual es de: %d/%d\n", manos.getFirst().getPuntaje()-10, manos.getFirst().getPuntaje());
             }else System.out.println("El puntaje actual es de: " + manos.getFirst().getPuntaje());
             System.out.println("===========================================");
 
-        }else{
-            int sumatoriaPuntaje1 = 0;
-            int sumatoriaPuntaje2 = 0;
-            System.out.println(getNombre() + " tiene las siguientes cartas en ambas manos:");
-            Carta cartasMano1;
-            Carta cartasMano2;
-            int debugManos = getManoActual().getMano().size();
-            System.out.println(debugManos);
-            for (int i = 0; i < getManoActual().getMano().size(); i++) {
-                Carta cartaMano = getManoActual().getMano().get(i);
-                System.out.printf("%s de %s\t\t\t\t", cartaMano.getValor(), cartaMano.getPalo());
-                sumatoriaPuntaje1 += cartaMano.getValorNumerico();
-                manos.getFirst().setPuntaje(sumatoriaPuntaje1);
-                for (int j = 0; j < getMano2().getMano().size(); j++) {
-                    Carta cartaMano2 = getMano2().getMano().get(j);
-                    System.out.printf("%s de %s\n", cartaMano2.getValor(), cartaMano2.getPalo());
-                    sumatoriaPuntaje2 += cartaMano2.getValorNumerico();
-                    manos.get(1).setPuntaje(sumatoriaPuntaje2);
-                }
-            }
-//            for (Carta carta : getManoActual().getMano()) {
-//                System.out.printf("%s de %s\t\t\t\t", carta.getValor(), carta.getPalo());
-//                sumatoriaPuntaje1 += carta.getValorNumerico();
-//                for (Carta cartaMano2 : getMano2().getMano()) {
-//                    System.out.printf("%s de %s\n", cartaMano2.getValor(), cartaMano2.getPalo());
-//                    sumatoriaPuntaje2 += cartaMano2.getValorNumerico();
-//                }
-//            }
-            for (int i = 0; i < 2; i++){
-                if (manos.get(i).tieneAs() && sumatoriaPuntaje1 < 21){
-                    // System.out.printf("El puntaje actual de la mano %d es de: %d/%d\n", i+1, this.puntaje-10, this.puntaje);
-                    System.out.printf("El puntaje actual de la mano %d es de: %d/%d\n", i+1, manos.get(i).getPuntaje()-10, manos.get(i).getPuntaje());
-                }else System.out.printf("El puntaje actual de la mano %d es de: %d\n", i+1, manos.get(i).getPuntaje());
-            }
-                System.out.println("===========================================");
-        }
+        }else mostrarManosDivididas();
     }
 
-    public int seguroBlackjack(Jugador jugador){
-        int ingreso = -1;
-        System.out.println("El crupier tiene un As de primer carta.");
-        System.out.printf("Ingrese '1' para pagar el seguro o '0' para no pagar el seguro ($%d): ", jugador.apuesta/2);
-        ingreso = scanner.nextInt();
-        while (ingreso != 1 || ingreso != 0){
-            if (ingreso != 1 || ingreso != 0){
-                System.out.println("[!] El numero ingresado no corresponde ni a '1' ni '0'.");
-            }
-            System.out.println("Ingrese '1' para pagar el seguro o '0' para no pagar el seguro: ");
-            ingreso = scanner.nextInt();
+    public void mostrarManosDivididas(){
+        int sumatoriaPuntaje1 = 0;
+        int sumatoriaPuntaje2 = 0;
+        System.out.println("===================================================");
+        System.out.println(getNombre() + " tiene las siguientes cartas en ambas manos:");
+        Carta cartasMano1;
+        Carta cartasMano2;
+
+        int cantidadCartas = Math.max(getManoActual().getMano().size(), getMano2().getMano().size());
+        System.out.printf("-= MANO 1=-\t\t\t\t\t %-17s\n", "-= MANO 2 =-");
+        for (int i = 0; i < cantidadCartas; i++){
+            if (i < getManoActual().getMano().size()){
+                cartasMano1 = getManoActual().getMano().get(i);
+                System.out.printf("%s %s", cartasMano1.getValor(), cartasMano1.getPalo());
+                sumatoriaPuntaje1 += cartasMano1.getValorNumerico();
+                manos.getFirst().setPuntaje(sumatoriaPuntaje1);
+            }else System.out.printf("%-20s\n", "");
+            if (i < getMano2().getMano().size()){
+                cartasMano2 = getMano2().getMano().get(i);
+                System.out.printf("%-15s %s de %s\n", "", cartasMano2.getValor(), cartasMano2.getPalo());
+                sumatoriaPuntaje2 += cartasMano2.getValorNumerico();
+                manos.getFirst().setPuntaje(sumatoriaPuntaje2);
+            }else System.out.printf("%-15s\n", "");
         }
-        if (ingreso == 1) pagoSeguro = true; // pagoSeguro queda guardado para el jugador
-        return ingreso;
+        if (getManoActual().tieneAs() && sumatoriaPuntaje1 <= 20){
+            System.out.printf("El puntaje actual de la mano %d es de: %d/%d\n", 1, getManoActual().getPuntaje()-10, getManoActual().getPuntaje());
+        }else System.out.printf("El puntaje actual de la mano %d es de: %d\n", 1, getManoActual().getPuntaje());
+        if (getMano2().tieneAs() && sumatoriaPuntaje2 <= 20){
+            System.out.printf("El puntaje actual de la mano %d es de: %d/%d\n", 2, getMano2().getPuntaje()-10, getManoActual().getPuntaje());
+        }else System.out.printf("El puntaje actual de la mano %d es de: %d\n", 2, getMano2().getPuntaje());
+        System.out.println("===================================================");
     }
 
     public boolean puedeDividir(){

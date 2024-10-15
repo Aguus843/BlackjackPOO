@@ -93,7 +93,7 @@ public class Mano{
             System.out.printf("%s de %s\n", carta.getValor(), carta.getPalo());
             sumatoriaPuntaje += carta.getValorNumerico();
         }
-        if (tieneAs() && sumatoriaPuntaje <= 20){
+        if ((tieneAs() && sumatoriaPuntaje <= 20) || (sumatoriaPuntaje == 22 && tieneAs())){
             System.out.printf("El puntaje actual es de: %d/%d\n", this.puntaje-10, this.puntaje);
         }else System.out.println("El puntaje actual es de: " + this.puntaje);
         System.out.println("===========================================");
@@ -107,6 +107,7 @@ public class Mano{
         doblo = true;
     }
     public void dividirMano(Jugador jugador){
+        // jugador.iniciarMano();
         jugador.agregarMano();
         // Paso lo de la mano uno
         List<Mano> manos = jugador.getManos();
@@ -118,15 +119,15 @@ public class Mano{
         // Ajusto la apuesta (Lo mismo para la mano 2)
         jugador.mostrarManos();
         jugador.setApuestaMano2(jugador.getApuesta());
+        jugador.ajustarSaldo(-jugador.getApuestaMano2());
         System.out.printf("%s: tu apuesta para ambas manos son -> Mano 1 (%d) -> Mano 2 (%d).\n", jugador.getNombre(), jugador.getApuesta(), jugador.getApuestaMano2());
-
     }
     public int seguroBlackjack(Jugador jugador){
-        int ingreso = -1;
+        int ingreso;
         System.out.println("El crupier tiene un As de primer carta.");
         System.out.printf("Ingrese '1' para pagar el seguro o '0' para no pagar el seguro ($%d): ", jugador.getApuesta()/2);
         ingreso = scanner.nextInt();
-        while (ingreso != 1 || ingreso != 0){
+        while (ingreso != 1 && ingreso != 0){
             if (ingreso != 1 || ingreso != 0){
                 System.out.println("[!] El numero ingresado no corresponde ni a '1' ni '0'.");
             }

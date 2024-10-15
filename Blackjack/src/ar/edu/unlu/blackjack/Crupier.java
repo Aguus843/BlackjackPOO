@@ -17,6 +17,10 @@ public class Crupier extends Jugador{
     public void pedirCarta(){
         mano.recibirCarta(getMazo().repartirCarta());
     }
+    public boolean tieneAsPrimera(){
+        if (getMano().getFirst().getValor().equals("A")) return true;
+        return false;
+    }
 
     // Metodo para saber si debe pedir otra carta
     public boolean debePedirCarta(){
