@@ -11,7 +11,10 @@ public class Mazo {
 
         String[] palos = {"Diamantes", "Treboles", "Corazones", "Picas"};
         // String[] valores = {"A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"};
-        String[] valores = {"A", "J"};
+        // Tests
+        // String[] valores = {"A", "J", "10", "K", "Q"};
+        // String[] valores = {"A", "2", "3", "4", "5"};
+        String[] valores = {"10", "K"};
 
         // Inicializo las cartas con sus valores
         for (String palo : palos) {
@@ -36,7 +39,7 @@ public class Mazo {
             System.out.println("No hay mas cartas en la baraja.");
             return null;
         }
-        return cartas.remove(0); // reparto y actualizo el mazo
+        return cartas.removeFirst(); // reparto y actualizo el mazo
     }
 
     // Hago un metodo para volver a barajar (Reinicio)

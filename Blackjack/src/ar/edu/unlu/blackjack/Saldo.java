@@ -18,13 +18,14 @@ public class Saldo {
 
     public void agregarSaldo(int monto){
         if (monto > 0){
-            this.cantidad += monto; // Valido que el monto pasado por parametro sea mayor q cero
+            this.cantidad += monto; // Valido que el monto pasado por parámetro sea mayor que cero
         }
     }
 
     public boolean retirarSaldo(int monto){ // Lo hago boolean para que el jugador pueda apostar con este saldo
         if (monto > 0 && this.cantidad > 0){
             this.cantidad -= monto;
+            // System.out.println("Se le retiró " + monto + (this.cantidad == 0 ? "" : " de " + this.cantidad + monto));
             return true;
         }else{
             System.out.println("Saldo insuficiente.");

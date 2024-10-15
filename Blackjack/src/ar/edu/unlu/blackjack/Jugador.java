@@ -2,18 +2,34 @@ package ar.edu.unlu.blackjack;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 public class Jugador {
     private String nombre;
-    private List<Carta> mano;
+    private List<Mano> manos;
     private int puntaje;
     private Saldo saldo;
+    private int apuesta;
+    private int apuestaMano2;
+    private boolean doblo;
+    private boolean pagoSeguro;
+    private Scanner scanner;
+    private Mazo mazo;
 
-    public Jugador(String nombre) {
+    public Jugador(String nombre, int saldoInicial) {
         this.nombre = nombre;
-        this.mano = new ArrayList<Carta>();
+        this.manos = new ArrayList<>();
+        mazo = new Mazo();
         this.puntaje = 0;
-        // this.saldo = new Saldo(saldoInicial);
+        this.saldo = new Saldo(saldoInicial);
+        this.apuesta = 0;
+        this.apuestaMano2 = 0;
+        this.doblo = false;
+        this.pagoSeguro = false;
+        this.scanner = new Scanner(System.in);
+    }
+    public Mazo getMazo(){
+        return this.mazo;
     }
     public int getSaldo(){
         return saldo.getSaldo();
@@ -21,80 +37,143 @@ public class Jugador {
     public void ajustarSaldo(int monto){
         if (monto > 0){
             saldo.agregarSaldo(monto);
+            System.out.println("Saldo agregado: " + monto);
         }else{
-            saldo.retirarSaldo(-monto);
+            // saldo.retirarSaldo(-monto);
+            if (!saldo.retirarSaldo(-monto)) throw new IllegalArgumentException("[!] Monto insuficiente para hacer la apuesta.");
         }
     }
+
+
+    // Metodo que reparte a UNA mano.
+    public void repartirCartaAMano(int indexMano, Carta carta){
+        if (indexMano  >= 0 && indexMano < manos.size()){
+            manos.get(indexMano).recibirCarta(carta);
+        }else System.out.println("El indice de mano no es valido.");
+    }
+    // Metodo que reparte a ambas manos
+    public void repartirATodasLasManos(Carta carta){
+        for (Mano mano : manos){
+            mano.recibirCarta(carta);
+        }
+    }
+
     public void mostrarSaldo(){
-        System.out.println("El jugador " + nombre + "tiene un saldo de: " + saldo.getSaldo());
+        System.out.println("El jugador " + nombre + " tiene un saldo de: " + saldo.getSaldo());
     }
     public String getNombre() {
         return this.nombre;
     }
-
-    // Metodo que actualiza el puntaje del jugador al recibir una carta
-    public void recibirCarta(Carta carta){
-        this.mano.add(carta);
-        actualizarPuntaje();
+    public int getApuesta(){
+        return this.apuesta;
     }
-    // Getter para saber el puntaje
-
-    public int getPuntaje() {
-        return puntaje;
+    public int getApuestaMano2(){
+        return this.apuestaMano2;
     }
-    // Actualizo el puntaje de la mano
-    private void actualizarPuntaje() {
-        puntaje = 0;
-        int cantidadDeAs = 0;
+    public void setApuestaMano2(int monto){
+        this.apuestaMano2 = monto;
+    }
+    public void setApuesta(int monto){
+        this.apuesta = monto;
+    }
+    public boolean getPagoSeguro(){
+        return this.pagoSeguro;
+    }
+    public void agregarMano(){
+        manos.add(new Mano());
+    }
+    public void iniciarMano(){
+        manos.clear();
+        manos.add(new Mano());
+    }
+    // Getter de mano actual (Cuando NO hay division)
+    public Mano getManoActual(){
+        return manos.getFirst();
+    }
+    public Mano getMano2(){
+        return manos.get(1);
+    }
+    // Getter de Manos
+    public List<Mano> getManos(){
+        return manos;
+    }
+    public boolean multiplesManos(){
+        return manos.size() > 1;
+    }
+    public void mostrarManos(){
+        int cantManos = getManos().size();
+        if (cantManos == 0) return;
+        if (cantManos == 1){
+            int sumatoriaPuntaje = 0;
+            System.out.println(getNombre() + " tiene las siguientes cartas:");
+            for (Carta carta : getManoActual().getMano()) {
+                System.out.printf("%s de %s\n", carta.getValor(), carta.getPalo());
+                sumatoriaPuntaje += carta.getValorNumerico();
+            }
+            if (manos.getFirst().tieneAs() && sumatoriaPuntaje <= 20){
+                System.out.printf("El puntaje actual es de: %d/%d\n", manos.getFirst().getPuntaje()-10, manos.getFirst().getPuntaje());
+            }else System.out.println("El puntaje actual es de: " + manos.getFirst().getPuntaje());
+            System.out.println("===========================================");
 
-        // calculo el puntaje inicial (las dos cartas recibidas)
-        // Recorro el array de la mano para saber qué cartas salieron
-        for (Carta carta : mano) {
-            puntaje += carta.getValorNumerico();
-            // Si la carta que tiene es un As aumento el contador en 1
-            if (carta.getValor().equals("A")){
-                cantidadDeAs++;
+        }else{
+            int sumatoriaPuntaje1 = 0;
+            int sumatoriaPuntaje2 = 0;
+            System.out.println(getNombre() + " tiene las siguientes cartas en ambas manos:");
+            for (Carta carta : getManoActual().getMano()) {
+                System.out.printf("%s de %s\t\t\t\t", carta.getValor(), carta.getPalo());
+                sumatoriaPuntaje1 += carta.getValorNumerico();
+                for (Carta cartaMano2 : getMano2().getMano()){
+                    System.out.printf("%s de %s\n", cartaMano2.getValor(), cartaMano2.getPalo());
+                    sumatoriaPuntaje2 += cartaMano2.getValorNumerico();
+                }
+            }
+            for (int i = 0; i < 2; i++){
+                for (int j = 0; j < getManos().size(); j++){
+                    // jugador.getManos().size() me devuelve la cantidad de manos activas del jugador
+                    if (manos.get(j).tieneAs() && sumatoriaPuntaje1 < 21){
+                        System.out.printf("El puntaje actual de la mano %d es de: %d/%d\n", j+1, this.puntaje-10, this.puntaje);
+                    }else System.out.printf("El puntaje actual de la mano %d es de: %d\n", j+1, this.puntaje);
+                }
+                System.out.println("===========================================");
             }
         }
+    }
 
-        //Si el jugador cuenta con cartas As y tiene +11, se lo cuenta como 1 en vez de 11
-        while (puntaje > 21 && cantidadDeAs > 0){
-            puntaje -= 10;
-            cantidadDeAs--;
+    public int seguroBlackjack(Jugador jugador){
+        int ingreso = -1;
+        System.out.println("El crupier tiene un As de primer carta.");
+        System.out.printf("Ingrese '1' para pagar el seguro o '0' para no pagar el seguro ($%d): ", jugador.apuesta/2);
+        ingreso = scanner.nextInt();
+        while (ingreso != 1 || ingreso != 0){
+            if (ingreso != 1 || ingreso != 0){
+                System.out.println("[!] El numero ingresado no corresponde ni a '1' ni '0'.");
+            }
+            System.out.println("Ingrese '1' para pagar el seguro o '0' para no pagar el seguro: ");
+            ingreso = scanner.nextInt();
         }
-    }
-    // Metodo para saber si se paso de 21
-    public boolean sePaso21(){
-        return puntaje > 21;
+        if (ingreso == 1) pagoSeguro = true; // pagoSeguro queda guardado para el jugador
+        return ingreso;
     }
 
-    // Metodo para nueva mano
-    public void nuevaMano(){
-        mano.clear();
-        puntaje = 0; // Reinicio puntaje y limpio la mano
-    }
-
-    // Metodo para mostrar la mano
-    public void mostrarMano(){
-        System.out.println(this.nombre + " tiene las siguientes cartas:");
-        for (Carta carta : mano) {
-            System.out.printf("%s de %s\n", carta.getValor(), carta.getPalo());
-            // System.out.println(carta.getValor());
-            // System.out.println(carta.getPalo());
+    public boolean puedeDividir(){
+        Mano mano = getManoActual();
+        if (mano != null){
+            if (mano.getMano().getFirst().getValor().equals(mano.getMano().get(1).getValor())){
+                return true;
+            }
         }
-        System.out.println("El puntaje actual es de: " + this.puntaje);
-        System.out.println("===========================================");
+        return false;
     }
-
-    public List<Carta> getMano(){
-        return mano;
+    public void setPagoSeguro(boolean b) {
+        this.pagoSeguro = b;
     }
-
     public boolean tieneBlackjack(){
-        if ((mano.get(0).getValor().equals("A")) && (mano.get(1).getValor().equals("10") || mano.get(1).getValor().equals("J") || mano.get(1).getValor().equals("Q") || mano.get(1).getValor().equals("K"))){
-            return true;
-        }else if ((mano.get(0).getValor().equals("10") || mano.get(0).getValor().equals("J") || mano.get(0).getValor().equals("Q") || mano.get(0).getValor().equals("K")) && mano.get(1).getValor().equals("A")){
-            return true;
+        for (Mano mano : manos){
+            if (mano != null){
+                if ((mano.getMano().getFirst().equals("A")) && (mano.getMano().get(1).getValor().equals("10") || mano.getMano().get(1).getValor().equals("J") || mano.getMano().get(1).getValor().equals("Q") || mano.getMano().get(1).getValor().equals("K"))){
+                    return true;
+                }else return (mano.getMano().getFirst().getValor().equals("10") || mano.getMano().getFirst().getValor().equals("J") || mano.getMano().getFirst().getValor().equals("Q") || mano.getMano().getFirst().getValor().equals("K")) && mano.getMano().get(1).getValor().equals("A");
+            }
         }
         return false;
     }
