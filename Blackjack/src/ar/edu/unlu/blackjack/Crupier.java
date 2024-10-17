@@ -41,6 +41,7 @@ public class Crupier extends Jugador{
         }
     }
     public void mostrarMano(){
+        System.out.println();
         System.out.println("El crupier tiene:");
         for (Carta carta : mano.getMano()) {
             System.out.printf("%s de %s\n", carta.getValor(), carta.getPalo());

@@ -104,6 +104,7 @@ public class Jugador {
 
     public void mostrarManos(){
         int cantManos = getManos().size();
+        System.out.println();
         if (cantManos == 0) return;
         if (cantManos == 1){
             int sumatoriaPuntaje = 0;
@@ -130,6 +131,7 @@ public class Jugador {
         System.out.println(getNombre() + " tiene las siguientes cartas en ambas manos:");
         Carta cartasMano1;
         Carta cartasMano2;
+        int puntajedebug;
 
         int cantidadCartas = Math.max(getManoActual().getMano().size(), getMano2().getMano().size());
         System.out.printf("-= MANO 1=-\t\t\t\t\t %-17s\n", "-= MANO 2 =-");
@@ -138,15 +140,17 @@ public class Jugador {
                 cartasMano1 = getManoActual().getMano().get(i);
                 System.out.printf("%s %s", cartasMano1.getValor(), cartasMano1.getPalo());
                 sumatoriaPuntaje1 += cartasMano1.getValorNumerico();
-                manos.getFirst().setPuntaje(sumatoriaPuntaje1);
             }else System.out.printf("%-20s\n", "");
             if (i < getMano2().getMano().size()){
                 cartasMano2 = getMano2().getMano().get(i);
                 System.out.printf("%-15s %s de %s\n", "", cartasMano2.getValor(), cartasMano2.getPalo());
                 sumatoriaPuntaje2 += cartasMano2.getValorNumerico();
-                manos.getFirst().setPuntaje(sumatoriaPuntaje2);
+                // manos.get(1).setPuntaje(sumatoriaPuntaje2);
             }else System.out.printf("%-15s\n", "");
+//            puntajedebug = manos.getFirst().getPuntaje();
+//            System.out.printf("[DEBUG] El puntaje es %d\n", puntajedebug);
         }
+        System.out.println();
         if (getManoActual().tieneAs() && sumatoriaPuntaje1 <= 20){
             System.out.printf("El puntaje actual de la mano %d es de: %d/%d\n", 1, getManoActual().getPuntaje()-10, getManoActual().getPuntaje());
         }else System.out.printf("El puntaje actual de la mano %d es de: %d\n", 1, getManoActual().getPuntaje());
@@ -169,13 +173,6 @@ public class Jugador {
         this.pagoSeguro = b;
     }
     public boolean tieneBlackjack(){
-//        for (Mano mano : manos){
-//            if (mano != null){
-//                if ((mano.getMano().getFirst().equals("A")) && (mano.getMano().get(1).getValor().equals("10") || mano.getMano().get(1).getValor().equals("J") || mano.getMano().get(1).getValor().equals("Q") || mano.getMano().get(1).getValor().equals("K"))){
-//                    return true;
-//                }else return (mano.getMano().getFirst().getValor().equals("10") || mano.getMano().getFirst().getValor().equals("J") || mano.getMano().getFirst().getValor().equals("Q") || mano.getMano().getFirst().getValor().equals("K")) && mano.getMano().get(1).getValor().equals("A");
-//            }
-//        }
         List<Mano> manos = getManos();
         for (int i = 0; i < manos.size(); i++){
             if ((manos.get(i).getMano().getFirst().equals("A")) && (manos.get(i).getMano().get(1).equals("10") || manos.get(i).getMano().get(1).equals("J") || manos.get(i).getMano().get(1).equals("Q") || manos.get(i).getMano().get(1).equals("K"))){

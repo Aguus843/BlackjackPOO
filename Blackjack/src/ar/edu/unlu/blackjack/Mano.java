@@ -50,25 +50,25 @@ public class Mano{
     }
 
     public void actualizarPuntaje() {
-        puntaje = 0;
+        this.puntaje = 0;
         int cantidadDeAs = 0;
         // Recorro el array de la mano para saber qué cartas salieron
         for (Carta carta : mano){
-            puntaje += carta.getValorNumerico();
+            this.puntaje += carta.getValorNumerico();
             if (carta.getValor().equals("A")){
                 cantidadDeAs++;
             }
         }
         // Si el jugador cuenta con Ases y tiene +21 de puntaje, se le cuenta como 1 en vez de 11.
         while (puntaje > 21 && cantidadDeAs > 0){
-            puntaje -= 10;
+            this.puntaje -= 10;
             cantidadDeAs--;
         }
     }
 
     // Verifico si la mano se pasó de 21.
     public boolean sePaso21(){
-        return puntaje > 21;
+        return this.puntaje > 21;
     }
 
     public boolean tieneAs(){
@@ -87,13 +87,14 @@ public class Mano{
 
     // Metodo para mostrar la mano
     public void mostrarMano(Jugador jugador){
+        System.out.println();
         int sumatoriaPuntaje = 0;
         System.out.println(jugador.getNombre() + " tiene las siguientes cartas:");
         for (Carta carta : mano) {
             System.out.printf("%s de %s\n", carta.getValor(), carta.getPalo());
             sumatoriaPuntaje += carta.getValorNumerico();
         }
-        if ((tieneAs() && sumatoriaPuntaje <= 20) || (sumatoriaPuntaje == 22 && tieneAs())){
+        if ((tieneAs() && sumatoriaPuntaje <= 20)){
             System.out.printf("El puntaje actual es de: %d/%d\n", this.puntaje-10, this.puntaje);
         }else System.out.println("El puntaje actual es de: " + this.puntaje);
         System.out.println("===========================================");
@@ -128,9 +129,7 @@ public class Mano{
         System.out.printf("Ingrese '1' para pagar el seguro o '0' para no pagar el seguro ($%d): ", jugador.getApuesta()/2);
         ingreso = scanner.nextInt();
         while (ingreso != 1 && ingreso != 0){
-            if (ingreso != 1 || ingreso != 0){
-                System.out.println("[!] El numero ingresado no corresponde ni a '1' ni '0'.");
-            }
+            System.out.println("[!] El numero ingresado no corresponde ni a '1' ni '0'.");
             System.out.println("Ingrese '1' para pagar el seguro o '0' para no pagar el seguro: ");
             ingreso = scanner.nextInt();
         }
