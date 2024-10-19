@@ -18,8 +18,7 @@ public class Crupier extends Jugador{
         mano.recibirCarta(getMazo().repartirCarta());
     }
     public boolean tieneAsPrimera(){
-        if (getMano().getFirst().getValor().equals("A")) return true;
-        return false;
+        return getMano().getFirst().getValor().equals("A");
     }
 
     // Metodo para saber si debe pedir otra carta
@@ -37,7 +36,7 @@ public class Crupier extends Jugador{
         }else{
             // System.out.println("La primera carta del crupier es: ");
             // System.out.printf("La primera carta del crupier es: %s de %s\n", mano.getMano().get(0).getValor(), mano.getMano().get(0).getPalo());
-            return mano.getMano().get(0).getValor() + ", " + mano.getMano().get(0).getPalo();
+            return mano.getMano().get(0).getValor() + " de " + mano.getMano().get(0).getPalo();
             // Imprime la primera carta del crupier siendo que la segunda está oculta.
         }
     }
@@ -48,6 +47,10 @@ public class Crupier extends Jugador{
             System.out.printf("%s de %s\n", carta.getValor(), carta.getPalo());
         }
         System.out.println("El puntaje actual del crupier es de: " + mano.getPuntaje());
+    }
+
+    public boolean tieneCarta(){
+        return getMano().size() > 0;
     }
 
 }

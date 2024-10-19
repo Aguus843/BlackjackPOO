@@ -169,9 +169,7 @@ public class Jugador {
     public boolean puedeDividir(){
         Mano mano = getManoActual();
         if (mano != null){
-            if (mano.getMano().getFirst().getValor().equals(mano.getMano().get(1).getValor())){
-                return true;
-            }
+            return mano.getMano().getFirst().getValor().equals(mano.getMano().get(1).getValor());
         }
         return false;
     }

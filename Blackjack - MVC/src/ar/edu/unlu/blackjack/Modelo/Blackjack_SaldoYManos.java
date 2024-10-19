@@ -52,8 +52,12 @@ public class Blackjack_SaldoYManos {
     public int getCantidadJugadores(){
         return this.cantidadJugadores;
     }
+    public boolean hasCrupierCard(){
+        return crupier.tieneCarta();
+    }
+
     public boolean realizarApuesta(Jugador jugador){
-        if (this.indiceJugador == jugadores.size()-1) return true;
+        if (this.indiceJugador == jugadores.size()) return true;
         int monto = Integer.parseInt(ingresarPorTeclado());
         while (monto > getJugadorActualTurno().getSaldo() || monto <= 0){
             ingresarPorTeclado();
@@ -62,11 +66,13 @@ public class Blackjack_SaldoYManos {
             }
         }
         getJugadorActualTurno().ajustarSaldo(-monto);
-        ingresarPorTeclado();
         getJugadorActualTurno().setApuesta(monto);
         getJugadorActualTurno().mostrarSaldo();
         getJugadorActualTurno().iniciarMano();
         return true;
+    }
+    public void cargarApuesta(Jugador jugador){
+        realizarApuesta(jugador);
     }
 
     // Metodo donde controlo al jugador
@@ -83,7 +89,6 @@ public class Blackjack_SaldoYManos {
             mano.mostrarMano(jugador);
             crupier.mostrarPrimeraCarta();
             while ((!mano.sePaso21() && mano.getPuntaje() != 21) && !flagDoblo) {
-
                 System.out.printf("Es el turno de: %s --> (%d)\n", jugador.getNombre(), mano.getPuntaje());
                 if (jugador.tieneBlackjack() && !yaRevisoBlackjack) {
                     // jugador.mostrarMano();
@@ -303,20 +308,32 @@ public class Blackjack_SaldoYManos {
         }
     }
 
-    public void repartirCartasIniciales(){
+//    public void repartirCartasIniciales(){
+//        Mano mano;
+//        for (Jugador jugador : jugadores){
+//            for (int i = 0; i < 2; i++){
+//                for (int j = 0; j < jugador.getManos().size(); j++){
+//                    // jugador.getManos().size() me devuelve la cantidad de manos activas del jugador
+//                    jugador.repartirCartaAMano(j, mazo.repartirCarta());
+//                }
+//            }
+//            mano = jugador.getManoActual() ;
+//            mano.mostrarMano(jugador);
+//            System.out.println("Presiona Enter para continuar...");
+//            scanner.nextLine();
+//        }
+//    }
+    public void repartirCartasIniciales(Jugador jugador){
         Mano mano;
-        for (Jugador jugador : jugadores){
-            for (int i = 0; i < 2; i++){
-                for (int j = 0; j < jugador.getManos().size(); j++){
-                    // jugador.getManos().size() me devuelve la cantidad de manos activas del jugador
-                    jugador.repartirCartaAMano(j, mazo.repartirCarta());
-                }
+        for (int i = 0; i < 2; i++){
+            for (int j = 0; j < jugador.getManos().size(); j++){
+                jugador.repartirCartaAMano(j, mazo.repartirCarta());
             }
-            mano = jugador.getManoActual() ;
-            mano.mostrarMano(jugador);
-            System.out.println("Presiona Enter para continuar...");
-            scanner.nextLine();
         }
+        mano = jugador.getManoActual() ;
+        mano.mostrarMano(jugador);
+        System.out.println("Presiona Enter para continuar...");
+        scanner.nextLine();
     }
 
     // Metodo donde controlo al crupier

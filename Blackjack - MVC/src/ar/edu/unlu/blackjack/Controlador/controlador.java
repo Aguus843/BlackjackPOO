@@ -7,7 +7,7 @@ public class controlador {
     public Blackjack_SaldoYManos modelo;
 
     public controlador(){
-
+        this.modelo = new Blackjack_SaldoYManos();
     }
 
     public void configurarJugadores(){
@@ -19,8 +19,8 @@ public class controlador {
     public void crupierPideCarta(){
         modelo.crupierPideCarta();
     }
-    public void repartirCartasIniciales(){
-        modelo.repartirCartasIniciales();
+    public void repartirCartasIniciales(Jugador jugadorActual){
+        modelo.repartirCartasIniciales(jugadorActual);
     }
     public String crupierMuestraPrimerCarta(){
         return modelo.crupierMuestraPrimerCarta();
@@ -54,6 +54,12 @@ public class controlador {
     }
     public int getCantidadJugadoresTotal(){
         return modelo.getCantidadJugadores();
+    }
+    public void cargarApuestaJugador(Jugador jugador){
+        modelo.cargarApuesta(jugador);
+    }
+    public boolean crupierTieneCarta(){
+        return modelo.hasCrupierCard();
     }
 
 }
